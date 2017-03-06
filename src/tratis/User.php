@@ -5,19 +5,31 @@ namespace thinkweb\auth\tratis;
 use thinkweb\auth\AuthException;
 
 trait User{
-    //设置字段名称，兼容不同表
-    protected $nike_name_key = 'nike_name'; //昵称
-    protected $login_fail_key = 'login_fail'; //登录失败次数
-    protected $login_token_key = 'login_token'; //登录token
-    protected $password_key = 'password'; //密码
-
     /**
      * @var array 登录会员保存表
      */
     static public $loginUser = [];
-    protected $userType = 'user';
-    protected $salt = 'salt';
-    protected $max_login_fail_nums = 5;
+    protected $userType;
+    protected $salt;
+    protected $max_login_fail_nums;
+
+    protected $nike_name_key; //昵称
+    protected $login_fail_key; //登录失败次数
+    protected $login_token_key; //登录token
+    protected $password_key; //密码
+
+
+    protected function initialize(){
+        //设置字段名称，兼容不同表
+        $this->nike_name_key = 'nike_name'; //昵称
+        $this->login_fail_key = 'login_fail'; //登录失败次数
+        $this->login_token_key = 'login_token'; //登录token
+        $this->password_key = 'password'; //密码
+
+        $this->userType = 'user';
+        $this->salt = 'salt';
+        $this->max_login_fail_nums = 5;
+    }
 
     public function loginByUsername($post){
         return $this->loginByAccount($post, 'username');
@@ -68,7 +80,7 @@ trait User{
         if(!$user){
             return false;
         }
-        return $user->setInc($this->login_fail_key);
+        return $user->where('id', $user['id'])->setInc($this->login_fail_key);
     }
 
     protected function updateLogin($user){
@@ -118,11 +130,11 @@ trait User{
     protected function setToken($user, $auth){
         //设置token
         $authToken = $this->createToken($auth);
-        $user->save([$this->login_token => $authToken]);
+        $user->save([$this->login_token_key => $authToken]);
     }
 
     public function getUserByToken($authToken){
-        return $this->where([$this->login_token => $authToken])->find();
+        return $this->where([$this->login_token_key => $authToken])->find();
     }
 
     public function isLogin(){
@@ -135,7 +147,7 @@ trait User{
     public function getLoginUser(){
         $loginUser = $this->isLogin();
         if(!$loginUser){
-            return [];
+            return null;
         }
         $loginUsers = static::$loginUser;
         if($loginUsers && isset($loginUsers[$loginUser['id']])){

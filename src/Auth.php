@@ -33,7 +33,7 @@ class Auth{
     public function check($name, $uid, $type=1, $mode='url', $relation='or') {
         if (!$this->_config['auth_on'])
             return true;
-        $authList = $this->getAuthList($uid,$type); //获取用户需要验证的所有有效规则列表
+        $authList = $this->getAuthList($uid, $type); //获取用户需要验证的所有有效规则列表
         if (is_string($name)) {
             $name = strtolower($name);
             if (strpos($name, ',') !== false) {
@@ -156,7 +156,7 @@ class Auth{
     protected function getUserInfo($uid) {
         static $userinfo=array();
         if(!isset($userinfo[$uid])){
-            $userinfo[$uid]=\think\Db::name($this->_config['auth_user'])->where(array('uid'=>$uid))->find();
+            $userinfo[$uid]=\think\Db::name($this->_config['auth_user'])->find($uid);
         }
         return $userinfo[$uid];
     }

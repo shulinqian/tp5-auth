@@ -23,6 +23,24 @@ $prefix = config('database.prefix');
 会员表必须要字段
 [用户名|手机|邮箱],昵称，登录失败次数，登录token，密码
 
+管理员表示例
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(30) DEFAULT NULL COMMENT '用户名',
+  `nike_name` varchar(60) DEFAULT NULL COMMENT '昵称',
+  `password` varchar(32) DEFAULT NULL COMMENT '密码',
+  `login_fail` int(11) DEFAULT '0' COMMENT '登录失败次数',
+  `login_token` varchar(120) DEFAULT NULL COMMENT '登录token',
+  `phone` varchar(32) DEFAULT NULL,
+  `email` varchar(60) DEFAULT NULL,
+  `last_login_time` int(11) DEFAULT NULL,
+  `last_login_ip` varchar(16) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `username` (`username`),
+  KEY `login_token` (`login_token`),
+  KEY `phone` (`phone`),
+  KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8
 
 /**
  * 权限认证类
@@ -37,7 +55,10 @@ $prefix = config('database.prefix');
  * 4，支持规则表达式。
  *      在think_auth_rule 表中定义一条规则时，如果type为1， condition字段就可以定义规则表达式。 如定义{score}>5  and {score}<100  表示用户的分数在5-100之间时这条规则才会通过。
  */
+```
+think_  请替换成自己的表 例如： admin__auth_rule  当然别忘记如果有表前缀的话，也请加上
 
+```
 //数据库
 /*
 -- ----------------------------
@@ -73,12 +94,12 @@ CREATE TABLE `think_auth_group` (
 -- ----------------------------
 DROP TABLE IF EXISTS `think_auth_group_access`;
 CREATE TABLE `think_auth_group_access` (
-    `uid` mediumint(8) unsigned NOT NULL,
-    `group_id` mediumint(8) unsigned NOT NULL,
-    UNIQUE KEY `uid_group_id` (`uid`,`group_id`),
-    KEY `uid` (`uid`),
-    KEY `group_id` (`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
- */
+       `uid` mediumint(8) unsigned NOT NULL,
+       `group_id` mediumint(8) unsigned NOT NULL,
+       UNIQUE KEY `uid_group_id` (`uid`,`group_id`),
+       KEY `uid` (`uid`),
+       KEY `group_id` (`group_id`)
+   ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+    */
     
  ```
