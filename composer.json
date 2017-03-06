@@ -1,12 +1,19 @@
 {
     "name": "shulinqian/tp5-auth",
     "description": "thinkphp5 auth类",
-
+    "type": "thinkweb-extend",
     "authors": [
         {
             "name": "qianqiangqiang",
             "email": "330576744@qq.com"
         }
     ],
-    "require": {}
+    "license": "Apache-2.0",
+    "autoload": {
+        "psr-4": {
+            "thinkweb\\auth\\": "src"
+        }
+    },
+    "require": {
+    }
 }
