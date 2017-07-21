@@ -127,18 +127,14 @@ class Auth{
         //循环规则，判断结果。
         $authList = array();   //
         foreach ($rules as $rule) {
+            $condition = true;
             if (!empty($rule['condition'])) { //根据condition进行验证
                 $user = $this->getUserInfo($uid);//获取用户信息,一维数组
-
-                $command = preg_replace('/\{(\w*?)\}/', '$user[\'\\1\']', $rule['condition']);
-                //dump($command);//debug
-                $condition = '';
-                @(eval('$condition=(' . $command . ');'));
-                if ($condition) {
-                    $authList[] = strtolower($rule['name']);
+                if(function_exists($rule['condition'])){
+                    $condition = call_user_func($rule['condition'], $user);
                 }
-            } else {
-                //只要存在就记录
+            }
+            if ($condition) {
                 $authList[] = strtolower($rule['name']);
             }
         }
@@ -153,7 +149,7 @@ class Auth{
     /**
      * 获得用户资料,根据自己的情况读取数据库
      */
-    protected function getUserInfo($uid) {
+    public function getUserInfo($uid) {
         static $userinfo=array();
         if(!isset($userinfo[$uid])){
             $userinfo[$uid]=\think\Db::name($this->_config['auth_user'])->find($uid);
